@@ -1,246 +1,348 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace rút_gọn
+namespace ConsoleApp8
 {
-    internal class Program
+
+    class Program
     {
-        static int[] mang;
-        static int[,] matran;
-        static Random r = new Random();
+        static int[] array;
+        static int[,] matrix;
+        static Random random = new Random();
+
         static void Main(string[] args)
         {
-            Console.OutputEncoding = Encoding.UTF8;
-            Menu();
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            ShowMenu();
         }
-        //10. Tao menu
-        static void Menu()
+
+        static void ShowMenu()
         {
             while (true)
             {
-                Console.WriteLine("\n=====MENU=====");
-                Console.WriteLine("1. Phat sinh mang");
-                Console.WriteLine("2. In mang");
-                Console.WriteLine("3. Tim so");
-                Console.WriteLine("4. In so nguyen to");
-                Console.WriteLine("5. Kiem tra sap xep mang");
-                Console.WriteLine("6. Sap xep mang giam dan");
-                Console.WriteLine("7. Phat sinh ma tran");
-                Console.WriteLine("8. In ma tran");
-                Console.WriteLine("9. Tinh tong 1 cot");
-                Console.WriteLine("0. Thoat chuong trinh");
-                Console.WriteLine("Chon [0-9]: ");
+                Console.WriteLine("\n========== MENU CHƯƠNG TRÌNH ==========");
+                Console.WriteLine("1. Phát sinh mảng ngẫu nhiên");
+                Console.WriteLine("2. In mảng");
+                Console.WriteLine("3. Tìm kiếm phần tử trong mảng");
+                Console.WriteLine("4. In các số nguyên tố trong mảng");
+                Console.WriteLine("5. Kiểm tra mảng đã sắp xếp chưa");
+                Console.WriteLine("6. Sắp xếp mảng giảm dần");
+                Console.WriteLine("7. Phát sinh ma trận ngẫu nhiên");
+                Console.WriteLine("8. In ma trận");
+                Console.WriteLine("9. Tính tổng một cột của ma trận");
+                Console.WriteLine("0. Thoát chương trình");
+                Console.WriteLine("========================================");
+                Console.Write("Nhập lựa chọn của bạn (0-9): ");
 
-                int chon = int.Parse(Console.ReadLine());
+                string choice = Console.ReadLine();
 
-                switch(chon)
+                switch (choice)
                 {
-                    case 1: Taomang(); break;
-                    case 2: Inmang(); break;
-                    case 3: Timso(); break;
-                    case 4: Innguyento(); break;
-                    case 5: Kiemtrasapxep(); break;
-                    case 6: Sapxepgiam(); break;
-                    case 7: Taomatran(); break;
-                    case 8: Inmatran(); break;
-                    case 9: Tongcot(); break;
-                    case 0: Console.WriteLine("Cam on da dung chuong trinh"); return;
-                    default: Console.WriteLine("Nhap so hop le"); break;
+                    case "1":
+                        GenerateRandomArray();
+                        break;
+                    case "2":
+                        PrintArray();
+                        break;
+                    case "3":
+                        SearchElement();
+                        break;
+                    case "4":
+                        PrintPrimeNumbers();
+                        break;
+                    case "5":
+                        CheckSorted();
+                        break;
+                    case "6":
+                        SortArrayDescending();
+                        break;
+                    case "7":
+                        GenerateRandomMatrix();
+                        break;
+                    case "8":
+                        PrintMatrix();
+                        break;
+                    case "9":
+                        SumColumn();
+                        break;
+                    case "0":
+                        Console.WriteLine("Cảm ơn bạn đã sử dụng chương trình!");
+                        return;
+                    default:
+                        Console.WriteLine("Lựa chọn không hợp lệ! Vui lòng chọn lại.");
+                        break;
                 }
             }
         }
-        //1. Tao mang
-        static void Taomang()
+
+        // 1. Phát sinh mảng ngẫu nhiên
+        static void GenerateRandomArray()
         {
-            Console.WriteLine("Nhap so phan tu N: ");
-            int phantu = int.Parse(Console.ReadLine());
-            mang = new int[phantu];
-            for(int i = 0; i < phantu; i++)
+            Console.Write("Nhập số lượng phần tử N: ");
+            if (int.TryParse(Console.ReadLine(), out int n) && n > 0)
             {
-                mang[i] = r.Next(1, 101);
+                array = new int[n];
+                for (int i = 0; i < n; i++)
+                {
+                    array[i] = random.Next(1, 101); // Số ngẫu nhiên từ 1 đến 100
+                }
+                Console.WriteLine($"Đã tạo mảng với {n} phần tử ngẫu nhiên.");
+            }
+            else
+            {
+                Console.WriteLine("Vui lòng nhập một số nguyên dương hợp lệ!");
             }
         }
-        //2. In mang
-        static void Inmang()
+
+        // 2. In mảng
+        static void PrintArray()
         {
-            if(mang == null)
+            if (array == null || array.Length == 0)
             {
-                Console.WriteLine("Chua tao mang, chon 1 de tao mang");
-                return; //Thoat khoi ngay lap tuc
+                Console.WriteLine("Mảng chưa được khởi tạo! Vui lòng chọn chức năng 1 trước.");
+                return;
             }
-            foreach(int x in mang)
+
+            Console.WriteLine("Các phần tử trong mảng:");
+            for (int i = 0; i < array.Length; i++)
             {
-                Console.Write(x +"\t");
+                Console.Write($"{array[i]}\t");
+                if ((i + 1) % 10 == 0) Console.WriteLine(); // Xuống dòng mỗi 10 phần tử
+            }
+            Console.WriteLine();
+        }
+
+        // 3. Tìm kiếm phần tử
+        static void SearchElement()
+        {
+            if (array == null || array.Length == 0)
+            {
+                Console.WriteLine("Mảng chưa được khởi tạo! Vui lòng chọn chức năng 1 trước.");
+                return;
+            }
+
+            Console.Write("Nhập số X cần tìm: ");
+            if (int.TryParse(Console.ReadLine(), out int x))
+            {
+                int lastPosition = FindLastOccurrence(x);
+                if (lastPosition != -1)
+                {
+                    Console.WriteLine($"Số {x} xuất hiện cuối cùng tại vị trí: {lastPosition}");
+                }
+                else
+                {
+                    Console.WriteLine($"Số {x} không tồn tại trong mảng.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Vui lòng nhập một số nguyên hợp lệ!");
             }
         }
-        //3. Tim so
-        static int Coso(int X)
+
+        static int FindLastOccurrence(int x)
         {
-            for(int i = 0;i < mang.Length;i++)
+            for (int i = array.Length - 1; i >= 0; i--)
             {
-                if (mang[i] == X)
+                if (array[i] == x)
                 {
                     return i;
                 }
             }
             return -1;
         }
-        static void Timso()
-        {
-            Console.WriteLine("Nhap so X can tim: ");
-            int X = int.Parse(Console.ReadLine());
-            int kq = Coso(X);
-            if(kq != -1)
-            {
-                Console.WriteLine($"Tim thay so {X} o vi tri {kq}");
-            }
-            if(kq == -1)
-            { 
-                Console.WriteLine($"Khong tim thay so {X} trong mang"); 
-            }
-        }
-        //4. In so nguyen to
-        static bool Languyento(int x)
-        {
-            if(x < 2) return false;
-            for(int i = 2; i <= Math.Sqrt(x); i++)
-            {
-                if(x % i == 0) return false;
-            }
-            return true;
-        }
-        static void Innguyento()
-        {
-            if (mang == null)
-            {
-                Console.WriteLine("Chua tao mang, chon 1 de tao mang");
-                return; //Thoat khoi ngay lap tuc
-            }
-            foreach(int x in mang)
-            {
-                if(Languyento(x))
-                {
-                    Console.Write($"{x} la so nguyen to\t");
-                }
-                if (!Languyento(x))
-                {
-                    Console.WriteLine("Khong co so nguyen to trong mang");
-                }
-            }
-        }
-        //5. Kiem tra sap xep mang
-        static bool Kt()
-        {
-            if (mang == null || mang.Length < 2) return true;
 
-            bool tang = true;
-            bool giam = true;
-
-            // kiểm tra tăng
-            for (int i = 0; i < mang.Length - 1; i++)
-            {
-                if (mang[i] > mang[i + 1])
-                {
-                    tang = false;
-                    break;
-                }
-            }
-
-            // kiểm tra giảm
-            for (int i = 0; i < mang.Length - 1; i++)
-            {
-                if (mang[i] < mang[i + 1])
-                {
-                    giam = false;
-                    break;
-                }
-            }
-
-            return tang || giam;
-        }
-
-        static void Kiemtrasapxep()
+        // 4. In các số nguyên tố
+        static void PrintPrimeNumbers()
         {
-            if (mang == null || mang.Length < 2)
+            if (array == null || array.Length == 0)
             {
-                Console.WriteLine("Mang chua du phan tu de kiem tra.");
+                Console.WriteLine("Mảng chưa được khởi tạo! Vui lòng chọn chức năng 1 trước.");
                 return;
             }
 
-            bool kqkt = Kt();
-            Console.WriteLine(kqkt ? "Mang da sap xep" : "Mang chua sap xep");
-        }
-        //6. Sap xep giam
-        static void Sapxepgiam()
-        {
-            for (int i = 0; i < mang.Length - 1; ++i)
+            Console.WriteLine("Các số nguyên tố trong mảng:");
+            bool hasPrime = false;
+            for (int i = 0; i < array.Length; i++)
             {
-                for(int j = 0; j < mang.Length - i - 1; ++j)
+                if (IsPrime(array[i]))
                 {
-                    if (mang[j] < mang[j + 1])
-                    {
-                        int tam = mang[j];
-                        mang[j] = mang[j + 1];
-                        mang[j + 1] = tam;
-                    }
+                    Console.Write($"{array[i]}\t");
+                    hasPrime = true;
                 }
-                Console.WriteLine();
             }
-            foreach(int s in mang)
+            if (!hasPrime)
             {
-                Console.Write(s + "\t");
-            }
-        }
-        //7. Tao ma tran
-        static void Taomatran()
-        {
-            Console.WriteLine("Nhap so dong: ");
-            int n = int.Parse(Console.ReadLine());
-            Console.WriteLine("Nhap so cot: ");
-            int m = int.Parse(Console.ReadLine());
-            matran = new int[n,m];
-
-            int dong = matran.GetLength(0);
-            int cot = matran.GetLength(1);
-            for (int i = 0; i < dong; i++)
-            {
-                for ( int j = 0;j < cot; j++)
-                matran[i,j] = r.Next(1, 101);
+                Console.Write("Không có số nguyên tố nào trong mảng.");
             }
             Console.WriteLine();
         }
-        //8. In ma tran
-        static void Inmatran()
+
+        static bool IsPrime(int n)
         {
-            for(int i = 0;i < matran.GetLength(0);i++)
+            if (n < 2) return false;
+            if (n == 2) return true;
+            if (n % 2 == 0) return false;
+
+            for (int i = 3; i * i <= n; i += 2)
             {
-                for (int j = 0;  j < matran.GetLength(1);j++)
+                if (n % i == 0) return false;
+            }
+            return true;
+        }
+
+        // 5. Kiểm tra mảng đã sắp xếp
+        static void CheckSorted()
+        {
+            if (array == null || array.Length == 0)
+            {
+                Console.WriteLine("Mảng chưa được khởi tạo! Vui lòng chọn chức năng 1 trước.");
+                return;
+            }
+
+            bool result = IsSorted();
+            Console.WriteLine($"Mảng đã được sắp xếp: {result}");
+        }
+
+        static bool IsSorted()
+        {
+            if (array.Length <= 1) return true;
+
+            // Kiểm tra sắp xếp tăng dần
+            bool ascending = true;
+            for (int i = 1; i < array.Length; i++)
+            {
+                if (array[i] < array[i - 1])
                 {
-                    Console.Write($"{matran[i,j]}\t");
+                    ascending = false;
+                    break;
+                }
+            }
+
+            // Kiểm tra sắp xếp giảm dần
+            bool descending = true;
+            for (int i = 1; i < array.Length; i++)
+            {
+                if (array[i] > array[i - 1])
+                {
+                    descending = false;
+                    break;
+                }
+            }
+            return ascending || descending;
+        }
+
+        // 6. Sắp xếp mảng giảm dần (Bubble Sort)
+        static void SortArrayDescending()
+        {
+            if (array == null || array.Length == 0)
+            {
+                Console.WriteLine("Mảng chưa được khởi tạo! Vui lòng chọn chức năng 1 trước.");
+                return;
+            }
+
+            // Bubble Sort giảm dần
+            for (int i = 0; i < array.Length - 1; i++)
+            {
+                for (int j = 0; j < array.Length - i - 1; j++)
+                {
+                    if (array[j] < array[j + 1])
+                    {
+                        // Hoán đổi
+                        int temp = array[j];
+                        array[j] = array[j + 1];
+                        array[j + 1] = temp;
+                    }
+                }
+            }
+            Console.WriteLine("Đã sắp xếp mảng theo thứ tự giảm dần.");
+        }
+
+        // 7. Phát sinh ma trận ngẫu nhiên
+        static void GenerateRandomMatrix()
+        {
+            Console.Write("Nhập số hàng N: ");
+            if (!int.TryParse(Console.ReadLine(), out int n) || n <= 0)
+            {
+                Console.WriteLine("Vui lòng nhập một số nguyên dương hợp lệ!");
+                return;
+            }
+
+            Console.Write("Nhập số cột M: ");
+            if (!int.TryParse(Console.ReadLine(), out int m) || m <= 0)
+            {
+                Console.WriteLine("Vui lòng nhập một số nguyên dương hợp lệ!");
+                return;
+            }
+
+            matrix = new int[n, m];
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < m; j++)
+                {
+                    matrix[i, j] = random.Next(1, 101); // Số ngẫu nhiên từ 1 đến 100
+                }
+            }
+            Console.WriteLine($"Đã tạo ma trận {n}x{m} với các phần tử ngẫu nhiên.");
+        }
+
+        // 8. In ma trận
+        static void PrintMatrix()
+        {
+            if (matrix == null)
+            {
+                Console.WriteLine("Ma trận chưa được khởi tạo! Vui lòng chọn chức năng 7 trước.");
+                return;
+            }
+
+            Console.WriteLine("Ma trận:");
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    Console.Write($"{matrix[i, j],4}");
                 }
                 Console.WriteLine();
             }
         }
-        //9. Tinh tonh 1 cot
-        static void Tongcot()
+
+        // 9. Tính tổng một cột
+        static void SumColumn()
         {
-            Console.WriteLine("Nhap vao chi so cot: ");
-            int c = int.Parse(Console.ReadLine());
-            int tong = 0;
-            if (c < 0 || c > matran.GetLength(1))
+            if (matrix == null)
             {
-                Console.WriteLine("Nhap chi so hop le");
+                Console.WriteLine("Ma trận chưa được khởi tạo! Vui lòng chọn chức năng 7 trước.");
+                return;
             }
-            for(int i = 0;i < matran.GetLength(0); i++)
+
+            int cols = matrix.GetLength(1);
+            Console.Write($"Nhập số cột cần tính tổng (0-{cols - 1}): ");
+
+            if (int.TryParse(Console.ReadLine(), out int col) && col >= 0 && col < cols)
             {
-                tong += matran[i, c];
+                int sum = 0;
+                int rows = matrix.GetLength(0);
+
+                for (int i = 0; i < rows; i++)
+                {
+                    sum += matrix[i, col];
+                }
+
+                Console.WriteLine($"Tổng các phần tử ở cột {col}: {sum}");
             }
-            Console.WriteLine($"Tong cot {c} la {tong}");
+            else
+            {
+                Console.WriteLine($"Vui lòng nhập số cột hợp lệ từ 0 đến {cols - 1}!");
+            }
         }
     }
 }
+
+
+
